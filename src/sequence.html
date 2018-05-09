@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+</body>
+<script src="utils.js"></script>
+<script>
+    const sequence = Promise.resolve();
+
+    getJSON('story.json').then(story => {
+        console.log(story.heading);
+        return story.chapterUrls.reduce((sequence, chapterUrl) => {
+            return sequence.then(() => {
+                return getJSON(chapterUrl);
+            }).then(chapter => {
+                console.log(chapter);
+            });
+        }, Promise.resolve());
+    }).then(() => {
+        console.log('All done');
+    }).catch(err => {
+        console.error(`Argh, broken: ${err.message}`);
+    }).then(() => {
+        console.log('All finished');
+    });
+
+</script>
+</html>
